@@ -11,3 +11,6 @@ And then running:
 ```
 ./out/executable
 ```
+
+## Dependencies
+This project utilizes the `graphviz` command line tool to render graphs to jpg. 
