@@ -16,17 +16,7 @@ int main() {
     &q0,
     &q1
   };
-  //
-  // State *collected_states[MAX_STATES];
-  // int state_count = 0;
-  //
-  // collect_states(dfa.start, collected_states, &state_count);
-  // printf("State count: %d\n", state_count);
-  // printf("Found following states:\n");
-  // for (int i = 0; i < state_count; i++) {
-  //   printf("  - q%c\n", collected_states[i]->name);
-  // }
-  //
+
   print_graphviz(&dfa);
 
   State *computed = dfa_compute(&dfa, dfa.start, "atata");
