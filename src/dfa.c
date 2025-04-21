@@ -27,23 +27,64 @@ int check_acceptance(DFA *dfa, State *current) {
   return current == dfa->final;
 }
 
+void collect_states(State *current, State **seen, int *seen_count) {
+  for (int i = 0; i < *seen_count; i++) {
+
+    // Check if the current state has already been noted down
+    if (seen[i] == current) {
+      return;
+    }
+  } 
+
+  seen[*seen_count] = current;
+  (*seen_count)++;
+
+  for (int i = 0; i < current->transition_count; i++) {
+    collect_states(current->transitions[i].to, seen, seen_count);
+  }
+}
+
 void print_graphviz(DFA *dfa) {
   FILE *fptr = fopen("out/dfa.dot", "w");
 
-  fprintf(fptr,
+  State *collected_states[MAX_STATES];
+  int state_count = 0;
+
+  collect_states(dfa->start, collected_states, &state_count);
+
+  printf("State count: %d\n", state_count);
+  printf("Found following states:\n");
+  for (int i = 0; i < state_count; i++) {
+    printf("  - q%c\n", collected_states[i]->name);
+  }
+
+  fprintf(fptr, 
 "digraph DFA {\n\
   rankdir=LR;\n\
   node [shape = circle];\n\
-  \n\
-  q0 [label=\"q0\"];\n\
-  q1 [label=\"q1\", shape=doublecircle];\n\
-  \n\
-  q0 -> q0 [label=\"a\"];\n\
-  q0 -> q1 [label=\"b\"];\n\
-}");
+  \n");
 
-  system("dot -Tjpg out/dfa.dot -o out/dfa.jpg");
-  printf("Check out/dfa.jpg for your image\n");
-  
+  for (int i = 0; i < state_count; i++) {
+    fprintf(fptr, "  q%c [label=\"q%c\"",
+            collected_states[i]->name,
+            collected_states[i]->name);
+
+    if (collected_states[i] == dfa->final) {
+      fprintf(fptr, ", shape=doublecircle");
+    }
+    fprintf(fptr, "];\n");
+
+    for (int j = 0; j < collected_states[i]->transition_count; j++) {
+      fprintf(fptr, "  q%c -> q%c [label=\"%c\"];\n",
+              collected_states[i]->name,
+              collected_states[i]->transitions[j].to->name,
+              collected_states[i]->transitions[j].symbol);
+    }
+  }
+
+  fprintf(fptr, "}");
   fclose(fptr);
+
+  system("pwd; dot -Tjpg out/dfa.dot -o out/dfa.jpg");
+  printf("Check out/dfa.jpg for your image\n");
 }
