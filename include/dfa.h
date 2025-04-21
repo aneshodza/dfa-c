@@ -23,5 +23,6 @@ typedef struct {
 
 State *dfa_compute(DFA *dfa, State *current, const char * const word);
 int check_acceptance(DFA *dfa, State *current);
+void print_graphviz(DFA *dfa);
 
 #endif

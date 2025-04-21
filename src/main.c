@@ -17,6 +17,7 @@ int main() {
     &q1
   };
 
+  // print_graphviz(&dfa);
   State *computed = dfa_compute(&dfa, dfa.start, "atata");
 
   if (check_acceptance(&dfa, computed)) {
