@@ -52,12 +52,6 @@ void print_graphviz(DFA *dfa) {
 
   collect_states(dfa->start, collected_states, &state_count);
 
-  printf("State count: %d\n", state_count);
-  printf("Found following states:\n");
-  for (int i = 0; i < state_count; i++) {
-    printf("  - q%c\n", collected_states[i]->name);
-  }
-
   fprintf(fptr, 
 "digraph DFA {\n\
   rankdir=LR;\n\
@@ -85,6 +79,6 @@ void print_graphviz(DFA *dfa) {
   fprintf(fptr, "}");
   fclose(fptr);
 
-  system("pwd; dot -Tjpg out/dfa.dot -o out/dfa.jpg");
+  system("dot -Tjpg out/dfa.dot -o out/dfa.jpg");
   printf("Check out/dfa.jpg for your image\n");
 }
